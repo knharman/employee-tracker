@@ -15,9 +15,9 @@ const main = async () => {
 
     const wholeBody = new Department(connection, 'Whole Body')
     await wholeBody.create()
-    
-    const specialty = new Department(connection, 'Specialty')
-    await specialty.create()
+    await wholeBody.update({name: "poop"})
+    await wholeBody.read()
+    await wholeBody.remove()
 
     connection.end()
 }
