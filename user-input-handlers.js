@@ -72,8 +72,34 @@ const addDepartment = async (connection) => {
 }
 
 const addRole = async (connection) => {
-    const job = new Job(connection, 'Cracker Team Leader', 60000, 0)
-    await job.create()
+    const departments = await db.allDepartments(connection)
+    const departmentChoices = convertArrToChoices(departments)
+    await inquirer
+        .prompt([
+            {
+                type: 'input',
+                name: 'addTitle',
+                message: 'Please enter the title for a new job:'
+            },
+            {
+                type: 'input',
+                name: 'addSalary',
+                message: 'Please enter the salary for this job:'
+            },
+            {
+                type: 'list',
+                name: 'addDepartment',
+                message: 'Please choose which department the new job will belong to:',
+                choices: departmentChoices
+            }
+        ])
+        .then(async (answers) => {
+            const job = new Job(connection, answers.addTitle, answers.addSalary, answers.addDepartment);
+            await job.create();
+        })
+        .catch((error) => {
+            console.log(error)
+        });
 }
 
 const addEmployee = async (connection) => {
@@ -92,6 +118,13 @@ const updateEmployee = async (connection) => {
         lastName: employeeToUpdate.lastName,
         jobId: userInputJobId,
         managerId: employeeToUpdate.managerId
+    })
+}
+
+const convertArrToChoices = arr => {
+    return arr.map((obj) => {
+        obj.value = obj.id
+        return obj
     })
 }
 
