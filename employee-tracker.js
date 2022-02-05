@@ -8,6 +8,7 @@ const Department = require('./schema/Department');
 const Job = require('./schema/Job');
 const Employee = require('./schema/Employee');
 const db = require('./Database')
+const userInputHandlers = require('./user-input-handlers')
 
 const main = async () => {
     // create the connection to database
@@ -25,84 +26,38 @@ const main = async () => {
                 type: 'list',
                 name: 'viewOptions',
                 message: 'Please choose from the following options:',
-                choices: ['View all departments', 'View all roles', 'View all employees', 'Add a department', 'Add a role', 'Add an employee', 'Update an employee role' ]
+                choices: ['View all departments', 'View all roles', 'View all employees', 'Add a department', 'Add a role', 'Add an employee', 'Update an employee role', 'Quit' ]
             }
         ])
         .then(async (answers) => {
             switch(answers.viewOptions) {
                 case 'View all departments':
-                    const departments = await db.allDepartments(connection)
-
-                    const table = new Table({
-                        head: ['ID', 'Name'],
-                        colWidths: [5, 32]
-                    })
-                    departments.forEach(department => {
-                        table.push(
-                            [department.id, department.name]
-                        )
-                    });
-
-                    console.log(table.toString());
+                    await userInputHandlers.viewAllDepartments(connection)
                     break;
                 case 'View all roles':
-                    const jobs = await db.allJobs(connection)
-                    const jobTable = new Table({
-                        head: ['ID', 'Title', 'Salary', 'Department ID'],
-                        colWidths: [5, 32, 15, 15]
-                    })
-                    jobs.forEach(job => {
-                        jobTable.push(
-                            [job.id, job.title, job.salary, job.department_id]
-                        )
-                    });
-
-                    console.log(jobTable.toString());
+                    await userInputHandlers.viewAllRoles(connection)
                     break;
                 case 'View all employees':
-                    const employees = await db.allEmployees(connection)
-                    const employeeTable = new Table({
-                        head: ['ID', 'First', 'Last', 'Job ID', 'Manager ID'],
-                        colWidths: [5, 32, 32, 8, 12]
-                    })
-                    employees.forEach(employee => {
-                        employeeTable.push(
-                            [employee.id, employee.first_name, employee.last_name, employee.job_id, String(employee.manager_id)]
-                        )
-                    });
-
-                    console.log(employeeTable.toString());
+                    await userInputHandlers.viewAllEmployees(connection)
                     break;
                 case 'Add a department':
-                    const department = new Department(connection, 'poop')
-                    await department.create()
+                    await userInputHandlers.addDepartment(connection)
                     break;
                 case 'Add a role':
-                    const job = new Job(connection, 'Cracker Team Leader', 60000, 0)
-                    await job.create()
+                    await userInputHandlers.addRole(connection)
                     break;
                 case 'Add an employee':
-                    const employee = new Employee(connection, 'Sarah', 'Conner', 0, 0)
-                    await employee.create()
+                    await userInputHandlers.addEmployee(connection)
                     break; 
                 case 'Update an employee role':
-                    const userInput = 3
-                    const userInputJobId = 2
-                    const employeeToUpdate = new Employee(connection)
-                    employeeToUpdate.id = userInput
-                    await employeeToUpdate.read()
-                    await employeeToUpdate.update({
-                        firstName: employeeToUpdate.firstName, 
-                        lastName: employeeToUpdate.lastName, 
-                        jobId: userInputJobId, 
-                        managerId: employeeToUpdate.managerId
-                    })
+                    await userInputHandlers.updateEmployee(connection)
                     break;
                 default:
-                    // impossible 
-                    console.log('switch statement resulted in default case')
+                    console.log('goodbye')
+                    process.exit()
             }
             connection.end()
+            main()
         })
         .catch((error) => {
             if (error.isTtyError) {
