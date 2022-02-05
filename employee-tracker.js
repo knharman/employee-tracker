@@ -1,6 +1,8 @@
 const mysql = require('mysql2/promise');
 const bluebird = require('bluebird');
 const Department = require('./schema/Department');
+const Job = require('./schema/Job');
+const Employee = require('./schema/Employee');
 require('dotenv').config()
 
 const main = async () => {
@@ -15,9 +17,12 @@ const main = async () => {
 
     const wholeBody = new Department(connection, 'Whole Body')
     await wholeBody.create()
-    await wholeBody.update({name: "poop"})
-    await wholeBody.read()
-    await wholeBody.remove()
+    
+    const teamLeader = new Job(connection, 'Cracker Team Leader', 60000, wholeBody.id)
+    await teamLeader.create()
+
+    const buyer = new Employee(connection, 'Kim', 'Andersonn', teamLeader.id, 3)
+    await buyer.create()
 
     connection.end()
 }

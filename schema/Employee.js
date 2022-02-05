@@ -1,5 +1,6 @@
 class Employee {
-    constructor(firstName, lastName, jobId, managerId) {
+    constructor(connection, firstName, lastName, jobId, managerId) {
+        this.connection = connection;
         this.firstName = firstName;
         this.lastName = lastName;
         this.jobId = jobId;
@@ -29,7 +30,7 @@ class Employee {
 
     async read() {
         let results = await this.connection.execute('SELECT * FROM employee WHERE id=(?)', [this.id])
-        
+
         const {firstName, lastName, jobId, managerId, id} = results[0][0]
 
         this.id = id
