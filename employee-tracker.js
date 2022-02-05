@@ -18,15 +18,6 @@ const main = async () => {
         Promise: bluebird
     });
 
-    // const wholeBody = new Department(connection, 'Whole Body')
-    // await wholeBody.create()
-    
-    // const teamLeader = new Job(connection, 'Cracker Team Leader', 60000, wholeBody.id)
-    // await teamLeader.create()
-
-    // const buyer = new Employee(connection, 'Kim', 'Andersonn', teamLeader.id, 3)
-    // await buyer.create()
-
     inquirer
         .prompt([
             {
@@ -55,12 +46,25 @@ const main = async () => {
                     await department.create()
                     break;
                 case 'Add a role':
-                    const job = new Job(connection, 'Cracker Team Leader', 60000, wholeBody.id)
+                    const job = new Job(connection, 'Cracker Team Leader', 60000, 0)
                     await job.create()
                     break;
                 case 'Add an employee':
+                    const employee = new Employee(connection, 'Sarah', 'Conner', 0, 0)
+                    await employee.create()
                     break; 
                 case 'Update an employee role':
+                    const userInput = 1
+                    const userInputJobId = 2
+                    const employeeToUpdate = new Employee(connection, '', '', null, null)
+                    employeeToUpdate.id = userInput
+                    employeeToUpdate.read()
+                    employeeToUpdate.update({
+                        firstName: employeeToUpdate.firstName, 
+                        lastName: employeeToUpdate.lastName, 
+                        jobId: userInputJobId, 
+                        managerId: employeeToUpdate.managerId
+                    })
                     break;
                 default:
                     // impossible 
