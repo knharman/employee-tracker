@@ -2,6 +2,8 @@ const Table = require('cli-table');
 const Department = require('./schema/Department');
 const Job = require('./schema/Job');
 const Employee = require('./schema/Employee');
+const inquirer = require('inquirer');
+const db = require('./Database')
 
 const viewAllDepartments = async (connection) => {
     const departments = await db.allDepartments(connection)
@@ -50,8 +52,23 @@ const viewAllEmployees = async (connection) => {
 }
 
 const addDepartment = async (connection) => {
-    const department = new Department(connection, 'poop');
-    await department.create();
+    await inquirer
+        .prompt([
+            {
+                type: 'input',
+                name: 'addDepartment',
+                message: 'Please enter the name of your new department:'
+            }
+        ])
+        .then(async (answers) => {
+            const department = new Department(connection, answers.addDepartment);
+            await department.create();
+        })
+        .catch((error) => {
+            console.log(error)
+        });
+
+    
 }
 
 const addRole = async (connection) => {

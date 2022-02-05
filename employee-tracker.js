@@ -11,6 +11,7 @@ const db = require('./Database')
 const userInputHandlers = require('./user-input-handlers')
 
 const main = async () => {
+    console.log('main called')
     // create the connection to database
     const connection = await mysql.createConnection({
         host: process.env.DB_HOST,
@@ -60,11 +61,6 @@ const main = async () => {
             main()
         })
         .catch((error) => {
-            if (error.isTtyError) {
-                // Prompt couldn't be rendered in the current environment
-            } else {
-                // Something else went wrong
-            }
             console.log(error)
             connection.end()
         });
