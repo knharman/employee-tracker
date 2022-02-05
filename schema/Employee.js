@@ -31,13 +31,13 @@ class Employee {
     async read() {
         let results = await this.connection.execute('SELECT * FROM employee WHERE id=(?)', [this.id])
 
-        const {firstName, lastName, jobId, managerId, id} = results[0][0]
+        const {first_name, last_name, job_id, manager_id, id} = results[0][0]
 
         this.id = id
-        this.firstName = firstName
-        this.lastName = lastName
-        this.jobId = jobId
-        this.managerId = managerId
+        this.firstName = first_name
+        this.lastName = last_name
+        this.jobId = job_id
+        this.managerId = manager_id
 
         console.log('successfully read row')
     }

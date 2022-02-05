@@ -20,6 +20,7 @@
   "homepage": "https://github.com/knharman/employee-tracker#readme",
   "dependencies": {
     "bluebird": "^3.7.2",
+    "cli-table": "^0.3.11",
     "console.table": "^0.10.0",
     "dotenv": "^14.3.2",
     "inquirer": "^8.2.0",
