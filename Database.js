@@ -17,6 +17,18 @@ const allEmployees = async connection => {
     return(rowObjects)
 }
 
+const allEmployeesJoined = async connection => {
+    let results = await connection.execute(`
+        SELECT e.id, e.first_name, e.last_name, j.title, d.name, j.salary, m.first_name AS m_first, m.last_name AS m_last
+        FROM employee e
+        JOIN job j ON e.job_id=j.id
+        JOIN department d ON d.id=j.department_id
+        JOIN employee m ON e.manager_id=m.id
+        `)
+    const rowObjects = results[0]
+    return(rowObjects)
+}
+
 const departmentByName = async (connection, name) => {
     let results = await connection.execute('SELECT * FROM department WHERE name=(?) LIMIT 1', [name])
     const rowObject = results[0][0]
@@ -39,6 +51,7 @@ module.exports = {
     allDepartments,
     allJobs,
     allEmployees,
+    allEmployeesJoined,
     departmentByName,
     jobByTitle,
     employeeByFirstLast

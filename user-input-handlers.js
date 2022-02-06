@@ -37,14 +37,14 @@ const viewAllRoles = async (connection) => {
 }
 
 const viewAllEmployees = async (connection) => {
-    const employees = await db.allEmployees(connection)
+    const employees = await db.allEmployeesJoined(connection)
     const employeeTable = new Table({
-        head: ['ID', 'First', 'Last', 'Job ID', 'Manager ID'],
-        colWidths: [5, 32, 32, 8, 12]
+        head: ['ID', 'First', 'Last', 'Job Title', 'Department', 'Salary', 'Manager'],
+        colWidths: [5, 32, 32, 32, 32, 12, 32]
     })
     employees.forEach(employee => {
         employeeTable.push(
-            [employee.id, employee.first_name, employee.last_name, employee.job_id, String(employee.manager_id)]
+            [employee.id, employee.first_name, employee.last_name, employee.title, employee.name, employee.salary, `${employee.m_first} ${employee.m_last}`]
         )
     });
 
@@ -67,8 +67,6 @@ const addDepartment = async (connection) => {
         .catch((error) => {
             console.log(error)
         });
-
-
 }
 
 const addRole = async (connection) => {
@@ -126,14 +124,13 @@ const addEmployee = async (connection) => {
                 name: 'chooseJob',
                 message: 'Please choose a role for the new employee:',
                 choices: jobChoices
-            }, 
+            },
             {
                 type: 'list',
                 name: 'chooseManager',
                 message: 'Please choose the new employee\'s manager:',
-                choices: [{name: 'None', value: null}, ...employeeChoices]
+                choices: [{ name: 'None', value: null }, ...employeeChoices]
             }
-        
         ])
         .then(async (answers) => {
             const employee = new Employee(connection, answers.firstName, answers.lastName, answers.chooseJob, answers.chooseManager);
@@ -145,17 +142,43 @@ const addEmployee = async (connection) => {
 }
 
 const updateEmployee = async (connection) => {
-    const userInput = 3
-    const userInputJobId = 2
-    const employeeToUpdate = new Employee(connection)
-    employeeToUpdate.id = userInput
-    await employeeToUpdate.read()
-    await employeeToUpdate.update({
-        firstName: employeeToUpdate.firstName,
-        lastName: employeeToUpdate.lastName,
-        jobId: userInputJobId,
-        managerId: employeeToUpdate.managerId
-    })
+    const employees = await db.allEmployees(connection)
+    const employeeChoices = convertEmployeesToChoices(employees)
+
+    const jobs = await db.allJobs(connection)
+    const jobChoices = convertJobsToChoices(jobs)
+
+    await inquirer
+        .prompt([
+            {
+                type: 'list',
+                name: 'chooseEmployee',
+                message: 'Please choose an employee to update:',
+                choices: employeeChoices
+            },
+            {
+                type: 'list',
+                name: 'chooseJob',
+                message: 'Please choose the employee\'s new role:',
+                choices: jobChoices
+            }
+
+        ])
+        .then(async (answers) => {
+            const employeeToUpdate = new Employee(connection)
+            employeeToUpdate.id = answers.chooseEmployee
+
+            await employeeToUpdate.read()
+            await employeeToUpdate.update({
+                firstName: employeeToUpdate.firstName,
+                lastName: employeeToUpdate.lastName,
+                jobId: answers.chooseJob,
+                managerId: employeeToUpdate.managerId
+            })
+        })
+        .catch((error) => {
+            console.log(error)
+        });  
 }
 
 const convertDepartmentsToChoices = arr => {
