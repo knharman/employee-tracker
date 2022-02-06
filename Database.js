@@ -11,6 +11,17 @@ const allJobs = async connection => {
     return(rowObjects)
 }
 
+const allJobsJoined = async connection => {
+    let results = await connection.execute(`
+        SELECT j.id, j.title, d.name, j.salary
+        FROM job j
+        JOIN department d ON j.department_id=d.id
+        ORDER BY j.id
+    `)
+    const rowObjects = results[0]
+    return(rowObjects)
+}
+
 const allEmployees = async connection => {
     let results = await connection.execute('SELECT * FROM employee')
     const rowObjects = results[0]
@@ -23,9 +34,11 @@ const allEmployeesJoined = async connection => {
         FROM employee e
         JOIN job j ON e.job_id=j.id
         JOIN department d ON d.id=j.department_id
-        JOIN employee m ON e.manager_id=m.id
+        LEFT JOIN employee m ON e.manager_id=m.id
+        ORDER BY e.id
         `)
     const rowObjects = results[0]
+
     return(rowObjects)
 }
 
@@ -50,6 +63,7 @@ const employeeByFirstLast = async (connection, first, last) => {
 module.exports = {
     allDepartments,
     allJobs,
+    allJobsJoined,
     allEmployees,
     allEmployeesJoined,
     departmentByName,

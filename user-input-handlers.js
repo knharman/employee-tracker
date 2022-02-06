@@ -22,14 +22,14 @@ const viewAllDepartments = async (connection) => {
 }
 
 const viewAllRoles = async (connection) => {
-    const jobs = await db.allJobs(connection)
+    const jobs = await db.allJobsJoined(connection)
     const jobTable = new Table({
-        head: ['ID', 'Title', 'Salary', 'Department ID'],
-        colWidths: [5, 32, 15, 15]
+        head: ['ID', 'Title', 'Salary', 'Department'],
+        colWidths: [5, 32, 15, 32]
     })
     jobs.forEach(job => {
         jobTable.push(
-            [job.id, job.title, job.salary, job.department_id]
+            [job.id, job.title, job.salary, job.name]
         )
     });
 
