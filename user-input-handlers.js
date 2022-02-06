@@ -68,28 +68,28 @@ const addDepartment = async (connection) => {
             console.log(error)
         });
 
-    
+
 }
 
 const addRole = async (connection) => {
     const departments = await db.allDepartments(connection)
-    const departmentChoices = convertArrToChoices(departments)
+    const departmentChoices = convertDepartmentsToChoices(departments)
     await inquirer
         .prompt([
             {
                 type: 'input',
                 name: 'addTitle',
-                message: 'Please enter the title for a new job:'
+                message: 'Please enter the title for a new role:'
             },
             {
                 type: 'input',
                 name: 'addSalary',
-                message: 'Please enter the salary for this job:'
+                message: 'Please enter the salary for this role:'
             },
             {
                 type: 'list',
                 name: 'addDepartment',
-                message: 'Please choose which department the new job will belong to:',
+                message: 'Please choose which department the new role will belong to:',
                 choices: departmentChoices
             }
         ])
@@ -103,8 +103,45 @@ const addRole = async (connection) => {
 }
 
 const addEmployee = async (connection) => {
-    const employee = new Employee(connection, 'Sarah', 'Conner', 0, 0)
-    await employee.create()
+    const employees = await db.allEmployees(connection)
+    const employeeChoices = convertEmployeesToChoices(employees)
+
+    const jobs = await db.allJobs(connection)
+    const jobChoices = convertJobsToChoices(jobs)
+
+    await inquirer
+        .prompt([
+            {
+                type: 'input',
+                name: 'firstName',
+                message: 'Please enter the first name of the new employee:'
+            },
+            {
+                type: 'input',
+                name: 'lastName',
+                message: 'Please enter the last name of the new employee:'
+            },
+            {
+                type: 'list',
+                name: 'chooseJob',
+                message: 'Please choose a role for the new employee:',
+                choices: jobChoices
+            }, 
+            {
+                type: 'list',
+                name: 'chooseManager',
+                message: 'Please choose the new employee\'s manager:',
+                choices: [{name: 'None', value: null}, ...employeeChoices]
+            }
+        
+        ])
+        .then(async (answers) => {
+            const employee = new Employee(connection, answers.firstName, answers.lastName, answers.chooseJob, answers.chooseManager);
+            await employee.create();
+        })
+        .catch((error) => {
+            console.log(error)
+        });
 }
 
 const updateEmployee = async (connection) => {
@@ -121,19 +158,35 @@ const updateEmployee = async (connection) => {
     })
 }
 
-const convertArrToChoices = arr => {
+const convertDepartmentsToChoices = arr => {
     return arr.map((obj) => {
         obj.value = obj.id
         return obj
     })
 }
 
+const convertEmployeesToChoices = arr => {
+    return arr.map((obj) => {
+        obj.value = obj.id
+        obj.name = `${obj.first_name} ${obj.last_name}`
+        return obj
+    })
+}
+
+const convertJobsToChoices = arr => {
+    return arr.map((obj) => {
+        obj.value = obj.id
+        obj.name = obj.title
+        return obj
+    })
+}
+
 module.exports = {
-    viewAllDepartments, 
-    viewAllRoles, 
-    viewAllEmployees, 
-    addDepartment, 
-    addRole, 
-    addEmployee, 
+    viewAllDepartments,
+    viewAllRoles,
+    viewAllEmployees,
+    addDepartment,
+    addRole,
+    addEmployee,
     updateEmployee
 }
