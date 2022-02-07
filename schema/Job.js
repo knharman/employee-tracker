@@ -1,3 +1,4 @@
+// constructor function modeling an instance of a role with CRUD methods
 class Job {
     constructor(connection, title, salary, departmentId) {
         this.connection = connection;

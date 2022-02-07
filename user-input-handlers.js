@@ -5,6 +5,7 @@ const Employee = require('./schema/Employee');
 const inquirer = require('inquirer');
 const db = require('./Database')
 
+// function to display all departments in formatted table
 const viewAllDepartments = async (connection) => {
     const departments = await db.allDepartments(connection)
 
@@ -21,6 +22,7 @@ const viewAllDepartments = async (connection) => {
     console.log(table.toString());
 }
 
+// function to display all roles in formatted table
 const viewAllRoles = async (connection) => {
     const jobs = await db.allJobsJoined(connection)
     const jobTable = new Table({
@@ -36,6 +38,7 @@ const viewAllRoles = async (connection) => {
     console.log(jobTable.toString());
 }
 
+// function to display all employees in formatted table
 const viewAllEmployees = async (connection) => {
     const employees = await db.allEmployeesJoined(connection)
     const employeeTable = new Table({
@@ -51,6 +54,7 @@ const viewAllEmployees = async (connection) => {
     console.log(employeeTable.toString());
 }
 
+// function to prompt user for more input to call create method to build a new instance of a department
 const addDepartment = async (connection) => {
     await inquirer
         .prompt([
@@ -69,6 +73,7 @@ const addDepartment = async (connection) => {
         });
 }
 
+// function to prompt user for more input to call create method to build a new instance of a role
 const addRole = async (connection) => {
     const departments = await db.allDepartments(connection)
     const departmentChoices = convertDepartmentsToChoices(departments)
@@ -100,6 +105,7 @@ const addRole = async (connection) => {
         });
 }
 
+// function to prompt user for more input to call create method to build a new instance of an employee
 const addEmployee = async (connection) => {
     const employees = await db.allEmployees(connection)
     const employeeChoices = convertEmployeesToChoices(employees)
@@ -141,6 +147,7 @@ const addEmployee = async (connection) => {
         });
 }
 
+// method to prompt user for more input to update employee role via read and update methods
 const updateEmployee = async (connection) => {
     const employees = await db.allEmployees(connection)
     const employeeChoices = convertEmployeesToChoices(employees)
@@ -181,6 +188,7 @@ const updateEmployee = async (connection) => {
         });  
 }
 
+// method to present departments id as name value
 const convertDepartmentsToChoices = arr => {
     return arr.map((obj) => {
         obj.value = obj.id
@@ -188,6 +196,7 @@ const convertDepartmentsToChoices = arr => {
     })
 }
 
+// method to present employee id as first name and last name value
 const convertEmployeesToChoices = arr => {
     return arr.map((obj) => {
         obj.value = obj.id
@@ -196,6 +205,7 @@ const convertEmployeesToChoices = arr => {
     })
 }
 
+// method to present job id as name value
 const convertJobsToChoices = arr => {
     return arr.map((obj) => {
         obj.value = obj.id

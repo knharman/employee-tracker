@@ -20,6 +20,7 @@ const main = async () => {
         Promise: bluebird
     });
 
+// begin prompts for user interaction 
     inquirer
         .prompt([
             {
@@ -29,6 +30,7 @@ const main = async () => {
                 choices: ['View all departments', 'View all roles', 'View all employees', 'Add a department', 'Add a role', 'Add an employee', 'Update an employee role', 'Quit' ]
             }
         ])
+        // switch for functions based on user option choice
         .then(async (answers) => {
             switch(answers.viewOptions) {
                 case 'View all departments':

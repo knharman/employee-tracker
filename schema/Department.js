@@ -1,5 +1,6 @@
 const mysql = require('mysql2/promise');
 
+// constructor function modeling an instance of a department with CRUD methods
 class Department {
     constructor(connection, name) {
         this.connection = connection;

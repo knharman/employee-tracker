@@ -1,3 +1,5 @@
+
+// constructor function modeling an instance of an employee with CRUD methods
 class Employee {
     constructor(connection, firstName, lastName, jobId, managerId) {
         this.connection = connection;
