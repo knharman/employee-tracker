@@ -10,9 +10,9 @@
   * [Links](#links)
   * [Questions](#questions)
   ### Installation
-  From the root of your project in the command line run the command 'npm init' and answer the series of prompts. Next, run the command 'npm install express.' (You must have Node.js installed on your computer to run these commands.)
+  First, create a .env file with your MySQL username and password following the example. From the root of your project in the command line run the command 'npm install' to install the required dependencies. Next, execute the schema.sql and seeds.sql files.
   ### Usage
-  Activate the server by running the command 'node employee-tracker.js'
+  Use the command 'npm start' to launch the application.
   ### Contributions
   Contributions coming soon!
   ### Tests
